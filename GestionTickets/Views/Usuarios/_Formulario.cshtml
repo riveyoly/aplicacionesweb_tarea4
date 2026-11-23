@@ -1,0 +1,34 @@
+@model GestionTickets.Models.Usuario
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="Cedula" class="form-label"></label>
+        <input asp-for="Cedula" class="form-control" maxlength="10" inputmode="numeric" placeholder="10 dígitos" />
+        <span asp-validation-for="Cedula" class="text-danger small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Nombre" class="form-label"></label>
+        <input asp-for="Nombre" class="form-control" maxlength="100" />
+        <span asp-validation-for="Nombre" class="text-danger small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Correo" class="form-label"></label>
+        <input asp-for="Correo" class="form-control" maxlength="120" type="email" />
+        <span asp-validation-for="Correo" class="text-danger small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Telefono" class="form-label"></label>
+        <input asp-for="Telefono" class="form-control" maxlength="10" inputmode="numeric" />
+        <span asp-validation-for="Telefono" class="text-danger small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Departamento" class="form-label"></label>
+        <input asp-for="Departamento" class="form-control" maxlength="60" />
+        <span asp-validation-for="Departamento" class="text-danger small"></span>
+    </div>
+</div>
+<div class="acciones-form">
+    <a asp-action="Index" class="btn btn-light" data-cancelar>Cancelar</a>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</div>

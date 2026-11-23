@@ -1,0 +1,43 @@
+@model GestionTickets.Models.Usuario
+@{
+    ViewData["Title"] = "Detalle del usuario";
+}
+
+<h1 class="titulo-pagina solo-pagina">Detalle del usuario</h1>
+<div class="tarjeta p-4">
+    <dl class="row detalle mb-0">
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Cedula)</dt>
+        <dd class="col-sm-8">@Model.Cedula</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Nombre)</dt>
+        <dd class="col-sm-8">@Model.Nombre</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Correo)</dt>
+        <dd class="col-sm-8">@Model.Correo</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Telefono)</dt>
+        <dd class="col-sm-8">@(Model.Telefono ?? "—")</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Departamento)</dt>
+        <dd class="col-sm-8">@Model.Departamento</dd>
+    </dl>
+
+    <h2 class="h6 mt-3">Tickets reportados (@Model.Tickets.Count)</h2>
+    @if (Model.Tickets.Count == 0)
+    {
+        <p class="text-muted small mb-0">Este usuario todavía no ha reportado tickets.</p>
+    }
+    else
+    {
+        <ul class="list-group list-group-flush">
+            @foreach (var t in Model.Tickets.OrderByDescending(t => t.FechaApertura))
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <a asp-controller="Tickets" asp-action="Details" asp-route-id="@t.TicketId">#@t.TicketId · @t.Asunto</a>
+                    <span class="badge @Catalogos.ClaseEstado(t.Estado)">@t.Estado</span>
+                </li>
+            }
+        </ul>
+    }
+
+    <div class="acciones-form">
+        <a asp-action="Index" class="btn btn-light" data-cancelar>Cerrar</a>
+        <a asp-action="Edit" asp-route-id="@Model.UsuarioId" class="btn btn-primary" data-modal="Editar usuario">Editar</a>
+    </div>
+</div>

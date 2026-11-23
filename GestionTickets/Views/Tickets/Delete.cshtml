@@ -1,0 +1,30 @@
+@model GestionTickets.Models.Ticket
+@{
+    ViewData["Title"] = "Eliminar ticket";
+}
+
+<h1 class="titulo-pagina solo-pagina">Eliminar ticket</h1>
+<div class="tarjeta p-4">
+    <p>¿Seguro que desea eliminar este ticket?</p>
+    @if (Model.Seguimientos.Count > 0)
+    {
+        <div class="alert alert-warning">También se eliminarán sus @Model.Seguimientos.Count seguimiento(s).</div>
+    }
+    <dl class="row detalle mb-0">
+        <dt class="col-sm-4">N.º</dt>
+        <dd class="col-sm-8">#@Model.TicketId</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Asunto)</dt>
+        <dd class="col-sm-8">@Model.Asunto</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Usuario)</dt>
+        <dd class="col-sm-8">@Model.Usuario.Nombre</dd>
+        <dt class="col-sm-4">Estado</dt>
+        <dd class="col-sm-8">@Model.Estado</dd>
+    </dl>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="TicketId" />
+        <div class="acciones-form">
+            <a asp-action="Index" class="btn btn-light" data-cancelar>Cancelar</a>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+        </div>
+    </form>
+</div>

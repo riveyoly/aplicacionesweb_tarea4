@@ -1,0 +1,12 @@
+@model GestionTickets.Models.Usuario
+@{
+    ViewData["Title"] = "Editar usuario";
+}
+
+<h1 class="titulo-pagina solo-pagina">Editar usuario</h1>
+<div class="tarjeta p-4">
+    <form asp-action="Edit">
+        <input type="hidden" asp-for="UsuarioId" />
+        <partial name="_Formulario" model="Model" />
+    </form>
+</div>

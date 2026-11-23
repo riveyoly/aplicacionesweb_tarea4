@@ -1,0 +1,57 @@
+@model IEnumerable<GestionTickets.Models.Categoria>
+@{
+    ViewData["Title"] = "Categorías";
+}
+
+<div class="encabezado">
+    <div>
+        <h1>Categorías</h1>
+        <p class="text-muted mb-0">Tipos de problema, su prioridad y el tiempo máximo de respuesta.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary" data-modal="Agregar categoría">
+        <i class="bi bi-plus-lg me-1"></i>Agregar categoría
+    </a>
+</div>
+
+<div class="tarjeta">
+    <div class="table-responsive">
+        <table class="table tabla align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(m => m.Nombre)</th>
+                    <th>@Html.DisplayNameFor(m => m.Descripcion)</th>
+                    <th>@Html.DisplayNameFor(m => m.Prioridad)</th>
+                    <th class="text-end">Respuesta (h)</th>
+                    <th>Estado</th>
+                    <th class="text-end">Tickets</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@item.Nombre</td>
+                        <td class="texto-corto">@item.Descripcion</td>
+                        <td><span class="badge @Catalogos.ClasePrioridad(item.Prioridad)">@item.Prioridad</span></td>
+                        <td class="text-end">@item.TiempoRespuestaHoras</td>
+                        <td>
+                            @if (item.Activa) { <span class="badge text-bg-success">Activa</span> }
+                            else { <span class="badge text-bg-secondary">Inactiva</span> }
+                        </td>
+                        <td class="text-end">@item.Tickets.Count</td>
+                        <td class="acciones">
+                            <a asp-action="Details" asp-route-id="@item.CategoriaId" class="btn btn-sm btn-outline-secondary" data-modal="Detalle de la categoría">Ver</a>
+                            <a asp-action="Edit" asp-route-id="@item.CategoriaId" class="btn btn-sm btn-outline-primary" data-modal="Editar categoría">Editar</a>
+                            <a asp-action="Delete" asp-route-id="@item.CategoriaId" class="btn btn-sm btn-outline-danger" data-modal="Eliminar categoría">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="7" class="text-center text-muted py-4">No hay categorías registradas.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

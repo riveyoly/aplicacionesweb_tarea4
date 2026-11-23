@@ -1,0 +1,11 @@
+@model GestionTickets.Models.Categoria
+@{
+    ViewData["Title"] = "Agregar categoría";
+}
+
+<h1 class="titulo-pagina solo-pagina">Agregar categoría</h1>
+<div class="tarjeta p-4">
+    <form asp-action="Create">
+        <partial name="_Formulario" model="Model" />
+    </form>
+</div>

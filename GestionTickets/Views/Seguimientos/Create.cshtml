@@ -1,0 +1,12 @@
+@model GestionTickets.Models.Seguimiento
+@{
+    ViewData["Title"] = "Agregar seguimiento";
+}
+
+<h1 class="titulo-pagina solo-pagina">Agregar seguimiento</h1>
+<div class="tarjeta p-4">
+    <form asp-action="Create">
+        <input type="hidden" name="volver" value="@ViewData["Volver"]" />
+        <partial name="_Formulario" model="Model" />
+    </form>
+</div>

@@ -1,0 +1,38 @@
+@model GestionTickets.Models.Seguimiento
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+<div class="row g-3">
+    <div class="col-12">
+        <label asp-for="TicketId" class="form-label"></label>
+        <select asp-for="TicketId" class="form-select" asp-items="ViewBag.TicketId">
+            <option value="">-- Seleccione --</option>
+        </select>
+        <span asp-validation-for="TicketId" class="text-danger small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="TecnicoId" class="form-label"></label>
+        <select asp-for="TecnicoId" class="form-select" asp-items="ViewBag.TecnicoId">
+            <option value="">-- Seleccione --</option>
+        </select>
+        <span asp-validation-for="TecnicoId" class="text-danger small"></span>
+    </div>
+    <div class="col-md-3">
+        <label asp-for="Fecha" class="form-label"></label>
+        <input asp-for="Fecha" class="form-control" type="date" />
+        <span asp-validation-for="Fecha" class="text-danger small"></span>
+    </div>
+    <div class="col-md-3">
+        <label asp-for="Estado" class="form-label"></label>
+        <select asp-for="Estado" class="form-select" asp-items="ViewBag.Estado"></select>
+        <span asp-validation-for="Estado" class="text-danger small"></span>
+    </div>
+    <div class="col-12">
+        <label asp-for="Comentario" class="form-label"></label>
+        <textarea asp-for="Comentario" class="form-control" rows="3" maxlength="500"></textarea>
+        <span asp-validation-for="Comentario" class="text-danger small"></span>
+    </div>
+</div>
+<div class="acciones-form">
+    <a asp-action="Index" class="btn btn-light" data-cancelar>Cancelar</a>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</div>

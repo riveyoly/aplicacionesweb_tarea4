@@ -1,0 +1,54 @@
+@model IEnumerable<GestionTickets.Models.Seguimiento>
+@{
+    ViewData["Title"] = "Seguimientos";
+}
+
+<div class="encabezado">
+    <div>
+        <h1>Seguimientos</h1>
+        <p class="text-muted mb-0">Avances registrados por los técnicos. El último de cada ticket define su estado.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary" data-modal="Agregar seguimiento">
+        <i class="bi bi-plus-lg me-1"></i>Agregar seguimiento
+    </a>
+</div>
+
+<div class="tarjeta">
+    <div class="table-responsive">
+        <table class="table tabla align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(m => m.Ticket)</th>
+                    <th>@Html.DisplayNameFor(m => m.Tecnico)</th>
+                    <th>@Html.DisplayNameFor(m => m.Fecha)</th>
+                    <th>@Html.DisplayNameFor(m => m.Estado)</th>
+                    <th>@Html.DisplayNameFor(m => m.Comentario)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="texto-corto">
+                            <a asp-controller="Tickets" asp-action="Details" asp-route-id="@item.TicketId">#@item.TicketId · @item.Ticket.Asunto</a>
+                        </td>
+                        <td>@item.Tecnico.Nombre</td>
+                        <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                        <td><span class="badge @Catalogos.ClaseEstado(item.Estado)">@item.Estado</span></td>
+                        <td class="texto-corto" title="@item.Comentario">@item.Comentario</td>
+                        <td class="acciones">
+                            <a asp-action="Details" asp-route-id="@item.SeguimientoId" class="btn btn-sm btn-outline-secondary" data-modal="Detalle del seguimiento">Ver</a>
+                            <a asp-action="Edit" asp-route-id="@item.SeguimientoId" class="btn btn-sm btn-outline-primary" data-modal="Editar seguimiento">Editar</a>
+                            <a asp-action="Delete" asp-route-id="@item.SeguimientoId" class="btn btn-sm btn-outline-danger" data-modal="Eliminar seguimiento">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6" class="text-center text-muted py-4">No hay seguimientos registrados.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

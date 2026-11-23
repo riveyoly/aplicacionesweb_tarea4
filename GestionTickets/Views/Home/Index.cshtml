@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+    var modulos = new[]
+    {
+        (Controlador: "Categorias", Titulo: "Categorías", Icono: "bi-tags", Cantidad: ViewData["Categorias"],
+            Texto: "Tipos de problema, su prioridad y tiempo de respuesta."),
+        (Controlador: "Usuarios", Titulo: "Usuarios", Icono: "bi-person", Cantidad: ViewData["Usuarios"],
+            Texto: "Personas de la empresa que reportan tickets."),
+        (Controlador: "Tecnicos", Titulo: "Técnicos", Icono: "bi-tools", Cantidad: ViewData["Tecnicos"],
+            Texto: "Personal de soporte que atiende los tickets."),
+        (Controlador: "Tickets", Titulo: "Tickets", Icono: "bi-ticket-perforated", Cantidad: ViewData["Tickets"],
+            Texto: "Solicitudes de soporte. El estado se calcula con los seguimientos."),
+        (Controlador: "Seguimientos", Titulo: "Seguimientos", Icono: "bi-chat-left-text", Cantidad: ViewData["Seguimientos"],
+            Texto: "Avances registrados por los técnicos en cada ticket.")
+    };
+}
+
+<section class="hero">
+    <p class="hero-saludo">Bienvenida YOLANDA</p>
+    <h1>Mesa<span>Ayuda</span></h1>
+    <p class="hero-texto">Sistema de gestión de tickets: categorías, usuarios, técnicos, tickets y seguimientos en un solo lugar.</p>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+        <a asp-controller="Tickets" asp-action="Index" class="btn btn-primary fw-semibold">Ver tickets</a>
+        <a asp-controller="Tickets" asp-action="Create" class="btn btn-outline-light" data-modal="Agregar ticket">Nuevo ticket</a>
+    </div>
+    <div class="hero-indicadores">
+        <a asp-controller="Tickets" asp-action="Index" asp-route-estado="Pendientes">
+            <strong>@ViewData["Pendientes"]</strong> pendientes
+        </a>
+        <span><strong>@ViewData["Vencidos"]</strong> fuera de tiempo</span>
+    </div>
+</section>
+
+<div class="row g-3 mt-2">
+    @foreach (var m in modulos)
+    {
+        <div class="col-sm-6 col-lg-4">
+            <a class="modulo" asp-controller="@m.Controlador" asp-action="Index">
+                <span class="modulo-icono"><i class="bi @m.Icono"></i></span>
+                <span class="modulo-titulo">@m.Titulo</span>
+                <span class="modulo-texto">@m.Texto</span>
+                <span class="modulo-cantidad">@m.Cantidad registro(s)</span>
+            </a>
+        </div>
+    }
+</div>

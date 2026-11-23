@@ -1,0 +1,35 @@
+@model GestionTickets.Models.Categoria
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="Nombre" class="form-label"></label>
+        <input asp-for="Nombre" class="form-control" maxlength="60" />
+        <span asp-validation-for="Nombre" class="text-danger small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Prioridad" class="form-label"></label>
+        <select asp-for="Prioridad" class="form-select" asp-items="ViewBag.Prioridad"></select>
+        <span asp-validation-for="Prioridad" class="text-danger small"></span>
+    </div>
+    <div class="col-12">
+        <label asp-for="Descripcion" class="form-label"></label>
+        <input asp-for="Descripcion" class="form-control" maxlength="250" />
+        <span asp-validation-for="Descripcion" class="text-danger small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="TiempoRespuestaHoras" class="form-label"></label>
+        <input asp-for="TiempoRespuestaHoras" class="form-control" min="1" max="720" />
+        <span asp-validation-for="TiempoRespuestaHoras" class="text-danger small"></span>
+    </div>
+    <div class="col-md-6 d-flex align-items-end">
+        <div class="form-check form-switch mb-2">
+            <input asp-for="Activa" class="form-check-input" role="switch" />
+            <label asp-for="Activa" class="form-check-label"></label>
+        </div>
+    </div>
+</div>
+<div class="acciones-form">
+    <a asp-action="Index" class="btn btn-light" data-cancelar>Cancelar</a>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</div>

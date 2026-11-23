@@ -1,0 +1,24 @@
+@model GestionTickets.Models.Seguimiento
+@{
+    ViewData["Title"] = "Eliminar seguimiento";
+}
+
+<h1 class="titulo-pagina solo-pagina">Eliminar seguimiento</h1>
+<div class="tarjeta p-4">
+    <p>¿Seguro que desea eliminar este seguimiento? El estado del ticket se recalculará con los seguimientos restantes.</p>
+    <dl class="row detalle mb-0">
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Ticket)</dt>
+        <dd class="col-sm-8">#@Model.TicketId · @Model.Ticket.Asunto</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Tecnico)</dt>
+        <dd class="col-sm-8">@Model.Tecnico.Nombre</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Fecha)</dt>
+        <dd class="col-sm-8">@Model.Fecha.ToString("dd/MM/yyyy") · @Model.Estado</dd>
+    </dl>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="SeguimientoId" />
+        <div class="acciones-form">
+            <a asp-action="Index" class="btn btn-light" data-cancelar>Cancelar</a>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+        </div>
+    </form>
+</div>

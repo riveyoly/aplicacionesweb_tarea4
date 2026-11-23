@@ -1,0 +1,74 @@
+@model IEnumerable<GestionTickets.Models.Ticket>
+@{
+    ViewData["Title"] = "Tickets";
+    var filtro = ViewData["Estado"] as string;
+    var filtros = new[] { "Pendientes" }.Concat(Catalogos.Estados);
+}
+
+<div class="encabezado">
+    <div>
+        <h1>Tickets</h1>
+        <p class="text-muted mb-0">El estado y el técnico se toman del último seguimiento de cada ticket.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary" data-modal="Agregar ticket">
+        <i class="bi bi-plus-lg me-1"></i>Agregar ticket
+    </a>
+</div>
+
+<div class="filtros d-flex flex-wrap gap-2 mb-3">
+    <a asp-action="Index" class="btn btn-sm @(string.IsNullOrEmpty(filtro) ? "btn-primary" : "btn-outline-secondary")">Todos</a>
+    @foreach (var f in filtros)
+    {
+        <a asp-action="Index" asp-route-estado="@f" class="btn btn-sm @(filtro == f ? "btn-primary" : "btn-outline-secondary")">@f</a>
+    }
+</div>
+
+<div class="tarjeta">
+    <div class="table-responsive">
+        <table class="table tabla align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>N.º</th>
+                    <th>@Html.DisplayNameFor(m => m.Asunto)</th>
+                    <th>@Html.DisplayNameFor(m => m.Usuario)</th>
+                    <th>@Html.DisplayNameFor(m => m.Categoria)</th>
+                    <th>Apertura</th>
+                    <th>Fecha límite</th>
+                    <th>Técnico</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-muted">#@item.TicketId</td>
+                        <td class="fw-semibold texto-corto" title="@item.Asunto">@item.Asunto</td>
+                        <td>@item.Usuario.Nombre</td>
+                        <td>
+                            @item.Categoria.Nombre
+                            <span class="badge @Catalogos.ClasePrioridad(item.Categoria.Prioridad)">@item.Categoria.Prioridad</span>
+                        </td>
+                        <td>@item.FechaApertura.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @item.FechaLimite.ToString("dd/MM/yyyy HH:mm")
+                            @if (item.Vencido) { <span class="badge text-bg-danger ms-1">Vencido</span> }
+                        </td>
+                        <td>@item.TecnicoAsignado</td>
+                        <td><span class="badge @Catalogos.ClaseEstado(item.Estado)">@item.Estado</span></td>
+                        <td class="acciones">
+                            <a asp-action="Details" asp-route-id="@item.TicketId" class="btn btn-sm btn-outline-secondary">Ver</a>
+                            <a asp-action="Edit" asp-route-id="@item.TicketId" class="btn btn-sm btn-outline-primary" data-modal="Editar ticket">Editar</a>
+                            <a asp-action="Delete" asp-route-id="@item.TicketId" class="btn btn-sm btn-outline-danger" data-modal="Eliminar ticket">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="9" class="text-center text-muted py-4">No hay tickets para mostrar.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,5 @@
+﻿@{
+    // Cuando la página se pide desde la ventana modal (fetch con X-Requested-With),
+    // se devuelve solo el contenido, sin el menú ni el pie de página.
+    Layout = Context.Request.Headers.XRequestedWith == "XMLHttpRequest" ? null : "_Layout";
+}

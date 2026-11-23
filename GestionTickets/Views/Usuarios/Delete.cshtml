@@ -1,0 +1,32 @@
+@model GestionTickets.Models.Usuario
+@{
+    ViewData["Title"] = "Eliminar usuario";
+    var tieneTickets = Model.Tickets.Count > 0;
+}
+
+<h1 class="titulo-pagina solo-pagina">Eliminar usuario</h1>
+<div class="tarjeta p-4">
+    @if (tieneTickets)
+    {
+        <div class="alert alert-warning">
+            Este usuario tiene @Model.Tickets.Count ticket(s) registrado(s) y no se puede eliminar.
+        </div>
+    }
+    else
+    {
+        <p>¿Seguro que desea eliminar este usuario?</p>
+    }
+    <dl class="row detalle mb-0">
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Cedula)</dt>
+        <dd class="col-sm-8">@Model.Cedula</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Nombre)</dt>
+        <dd class="col-sm-8">@Model.Nombre</dd>
+    </dl>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="UsuarioId" />
+        <div class="acciones-form">
+            <a asp-action="Index" class="btn btn-light" data-cancelar>Cancelar</a>
+            <button type="submit" class="btn btn-danger" disabled="@tieneTickets">Eliminar</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,33 @@
+@model GestionTickets.Models.Categoria
+@{
+    ViewData["Title"] = "Eliminar categoría";
+    var tieneTickets = Model.Tickets.Count > 0;
+}
+
+<h1 class="titulo-pagina solo-pagina">Eliminar categoría</h1>
+<div class="tarjeta p-4">
+    @if (tieneTickets)
+    {
+        <div class="alert alert-warning">
+            Esta categoría tiene @Model.Tickets.Count ticket(s) y no se puede eliminar.
+            Puede editarla y marcarla como inactiva.
+        </div>
+    }
+    else
+    {
+        <p>¿Seguro que desea eliminar esta categoría?</p>
+    }
+    <dl class="row detalle mb-0">
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Nombre)</dt>
+        <dd class="col-sm-8">@Model.Nombre</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Prioridad)</dt>
+        <dd class="col-sm-8">@Model.Prioridad</dd>
+    </dl>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="CategoriaId" />
+        <div class="acciones-form">
+            <a asp-action="Index" class="btn btn-light" data-cancelar>Cancelar</a>
+            <button type="submit" class="btn btn-danger" disabled="@tieneTickets">Eliminar</button>
+        </div>
+    </form>
+</div>

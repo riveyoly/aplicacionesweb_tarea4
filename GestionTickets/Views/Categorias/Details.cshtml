@@ -1,0 +1,26 @@
+@model GestionTickets.Models.Categoria
+@{
+    ViewData["Title"] = "Detalle de la categoría";
+}
+
+<h1 class="titulo-pagina solo-pagina">Detalle de la categoría</h1>
+<div class="tarjeta p-4">
+    <dl class="row detalle mb-0">
+        <dt class="col-sm-5">@Html.DisplayNameFor(m => m.Nombre)</dt>
+        <dd class="col-sm-7">@Model.Nombre</dd>
+        <dt class="col-sm-5">@Html.DisplayNameFor(m => m.Descripcion)</dt>
+        <dd class="col-sm-7">@(Model.Descripcion ?? "—")</dd>
+        <dt class="col-sm-5">@Html.DisplayNameFor(m => m.Prioridad)</dt>
+        <dd class="col-sm-7"><span class="badge @Catalogos.ClasePrioridad(Model.Prioridad)">@Model.Prioridad</span></dd>
+        <dt class="col-sm-5">@Html.DisplayNameFor(m => m.TiempoRespuestaHoras)</dt>
+        <dd class="col-sm-7">@Model.TiempoRespuestaHoras horas</dd>
+        <dt class="col-sm-5">@Html.DisplayNameFor(m => m.Activa)</dt>
+        <dd class="col-sm-7">@(Model.Activa ? "Sí" : "No")</dd>
+        <dt class="col-sm-5">Tickets registrados</dt>
+        <dd class="col-sm-7">@Model.Tickets.Count</dd>
+    </dl>
+    <div class="acciones-form">
+        <a asp-action="Index" class="btn btn-light" data-cancelar>Cerrar</a>
+        <a asp-action="Edit" asp-route-id="@Model.CategoriaId" class="btn btn-primary" data-modal="Editar categoría">Editar</a>
+    </div>
+</div>

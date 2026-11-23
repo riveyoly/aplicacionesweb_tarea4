@@ -1,0 +1,33 @@
+@model GestionTickets.Models.Tecnico
+@{
+    ViewData["Title"] = "Eliminar técnico";
+    var tieneSeguimientos = Model.Seguimientos.Count > 0;
+}
+
+<h1 class="titulo-pagina solo-pagina">Eliminar técnico</h1>
+<div class="tarjeta p-4">
+    @if (tieneSeguimientos)
+    {
+        <div class="alert alert-warning">
+            Este técnico registró @Model.Seguimientos.Count seguimiento(s) y no se puede eliminar.
+            Puede editarlo y marcarlo como inactivo.
+        </div>
+    }
+    else
+    {
+        <p>¿Seguro que desea eliminar este técnico?</p>
+    }
+    <dl class="row detalle mb-0">
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Nombre)</dt>
+        <dd class="col-sm-8">@Model.Nombre</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Especialidad)</dt>
+        <dd class="col-sm-8">@Model.Especialidad</dd>
+    </dl>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="TecnicoId" />
+        <div class="acciones-form">
+            <a asp-action="Index" class="btn btn-light" data-cancelar>Cancelar</a>
+            <button type="submit" class="btn btn-danger" disabled="@tieneSeguimientos">Eliminar</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,28 @@
+@model GestionTickets.Models.Seguimiento
+@{
+    ViewData["Title"] = "Detalle del seguimiento";
+}
+
+<h1 class="titulo-pagina solo-pagina">Detalle del seguimiento</h1>
+<div class="tarjeta p-4">
+    <dl class="row detalle mb-0">
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Ticket)</dt>
+        <dd class="col-sm-8">
+            <a asp-controller="Tickets" asp-action="Details" asp-route-id="@Model.TicketId">#@Model.TicketId · @Model.Ticket.Asunto</a>
+        </dd>
+        <dt class="col-sm-4">Usuario</dt>
+        <dd class="col-sm-8">@Model.Ticket.Usuario.Texto</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Tecnico)</dt>
+        <dd class="col-sm-8">@Model.Tecnico.Nombre</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Fecha)</dt>
+        <dd class="col-sm-8">@Model.Fecha.ToString("dd/MM/yyyy")</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Estado)</dt>
+        <dd class="col-sm-8"><span class="badge @Catalogos.ClaseEstado(Model.Estado)">@Model.Estado</span></dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Comentario)</dt>
+        <dd class="col-sm-8">@Model.Comentario</dd>
+    </dl>
+    <div class="acciones-form">
+        <a asp-action="Index" class="btn btn-light" data-cancelar>Cerrar</a>
+        <a asp-action="Edit" asp-route-id="@Model.SeguimientoId" class="btn btn-primary" data-modal="Editar seguimiento">Editar</a>
+    </div>
+</div>

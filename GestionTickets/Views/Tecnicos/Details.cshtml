@@ -1,0 +1,43 @@
+@model GestionTickets.Models.Tecnico
+@{
+    ViewData["Title"] = "Detalle del técnico";
+}
+
+<h1 class="titulo-pagina solo-pagina">Detalle del técnico</h1>
+<div class="tarjeta p-4">
+    <dl class="row detalle mb-0">
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Nombre)</dt>
+        <dd class="col-sm-8">@Model.Nombre</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Correo)</dt>
+        <dd class="col-sm-8">@Model.Correo</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Telefono)</dt>
+        <dd class="col-sm-8">@(Model.Telefono ?? "—")</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Especialidad)</dt>
+        <dd class="col-sm-8">@Model.Especialidad</dd>
+        <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Activo)</dt>
+        <dd class="col-sm-8">@(Model.Activo ? "Sí" : "No")</dd>
+    </dl>
+
+    <h2 class="h6 mt-3">Seguimientos registrados (@Model.Seguimientos.Count)</h2>
+    @if (Model.Seguimientos.Count == 0)
+    {
+        <p class="text-muted small mb-0">Todavía no registra seguimientos.</p>
+    }
+    else
+    {
+        <ul class="list-group list-group-flush">
+            @foreach (var s in Model.Seguimientos.OrderByDescending(s => s.Fecha).Take(5))
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span>@s.Fecha.ToString("dd/MM/yyyy") · Ticket #@s.TicketId · @s.Ticket.Asunto</span>
+                    <span class="badge @Catalogos.ClaseEstado(s.Estado)">@s.Estado</span>
+                </li>
+            }
+        </ul>
+    }
+
+    <div class="acciones-form">
+        <a asp-action="Index" class="btn btn-light" data-cancelar>Cerrar</a>
+        <a asp-action="Edit" asp-route-id="@Model.TecnicoId" class="btn btn-primary" data-modal="Editar técnico">Editar</a>
+    </div>
+</div>

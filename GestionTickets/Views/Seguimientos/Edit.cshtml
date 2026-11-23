@@ -1,0 +1,12 @@
+@model GestionTickets.Models.Seguimiento
+@{
+    ViewData["Title"] = "Editar seguimiento";
+}
+
+<h1 class="titulo-pagina solo-pagina">Editar seguimiento</h1>
+<div class="tarjeta p-4">
+    <form asp-action="Edit">
+        <input type="hidden" asp-for="SeguimientoId" />
+        <partial name="_Formulario" model="Model" />
+    </form>
+</div>
