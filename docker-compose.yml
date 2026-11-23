@@ -1,0 +1,55 @@
+# Sistema de Gestión de Tickets
+# Uso:  docker compose up -d --build      →  http://localhost:8081
+# Las credenciales se leen del archivo .env (copie .env.example como .env).
+
+name: gestion-tickets
+
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: gestion-tickets-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-gestion_tickets}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD en el archivo .env}
+      TZ: America/Guayaquil
+    ports:
+      - "${DB_PORT:-5434}:5432"   # acceso desde pgAdmin del equipo: localhost:5434
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # La primera vez que arranca, PostgreSQL ejecuta estos scripts en orden
+      - ./Database/01_crear_tablas.sql:/docker-entrypoint-initdb.d/01_crear_tablas.sql:ro
+      - ./Database/02_datos_prueba.sql:/docker-entrypoint-initdb.d/02_datos_prueba.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gestion-tickets-web:1.0
+    container_name: gestion-tickets-web
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      DB_HOST: db
+      DB_PORT: "5432"
+      POSTGRES_DB: ${POSTGRES_DB:-gestion_tickets}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD en el archivo .env}
+      TZ: America/Guayaquil
+    ports:
+      - "${WEB_PORT:-8081}:8080"
+    volumes:
+      - dpkeys:/app/keys
+
+volumes:
+  pgdata:   # datos de PostgreSQL (sobreviven a reinicios)
+  dpkeys:   # claves de Data Protection de ASP.NET Core

@@ -1,0 +1,277 @@
+=====================================================================
+  INSTRUCCIONES DE DESPLIEGUE - SISTEMA DE GESTION DE TICKETS
+  C# - ASP.NET Core MVC + SCAFFOLDING + POSTGRESQL + DOCKER
+  Yolanda Rivera
+=====================================================================
+
+QUE HACE EL SISTEMA
+-------------------
+"MesaAyuda" registra los tickets de soporte que abren los usuarios de
+una empresa, los clasifica por categoria y guarda el seguimiento que
+hacen los tecnicos hasta resolverlos y cerrarlos.
+
+
+LAS 5 ENTIDADES (5 ATRIBUTOS CADA UNA, ADEMAS DE SU ID)
+-------------------------------------------------------
+   Categorias   (nombre, descripcion, prioridad,
+                 tiempo_respuesta_horas, activa)
+   Usuarios     (cedula, nombre, correo, telefono, departamento)
+   Tecnicos     (nombre, correo, telefono, especialidad, activo)
+   Tickets      (asunto, descripcion, fecha_apertura,
+                 usuario_id -> Usuarios, categoria_id -> Categorias)
+   Seguimientos (ticket_id -> Tickets, tecnico_id -> Tecnicos,
+                 fecha, estado, comentario)
+
+Relaciones:
+   Un usuario abre muchos tickets.
+   Una categoria clasifica muchos tickets.
+   Un ticket tiene muchos seguimientos.
+   Un tecnico registra muchos seguimientos.
+
+El ESTADO del ticket y el TECNICO ASIGNADO no son columnas: se toman
+del ultimo seguimiento (igual que el saldo en el ejemplo MiBanco).
+
+
+QUE ES "SCAFFOLDING" Y COMO SE USO
+----------------------------------
+Scaffolding = generar codigo automaticamente. Se uso dos veces:
+
+1. Modelos a partir de la base de datos (Database First):
+      dotnet ef dbcontext scaffold ...
+   Genero Models/ (Categoria, Usuario, Tecnico, Ticket, Seguimiento)
+   y Data/GestionTicketsContext.cs leyendo las tablas de PostgreSQL.
+
+2. Controladores y vistas CRUD a partir de los modelos:
+      dotnet aspnet-codegenerator controller ...
+   Genero 5 controladores y 25 vistas (Index, Create, Edit,
+   Details, Delete de cada entidad).
+
+Despues se personalizaron: textos en espanol, ventanas modales para
+agregar y editar, listas desplegables y reglas de negocio. Los
+comandos exactos estan al final de este archivo.
+
+
+CONTENIDO DE LA ENTREGA
+-----------------------
+ |-- INSTRUCCIONES_DESPLIEGUE.txt          Este archivo.
+ |-- SCRIPT_BASE_DATOS_GESTION_TICKETS.sql Script unico: tablas + datos.
+ |-- GestionTickets_CSharp.zip             Proyecto comprimido.
+ `-- GestionTickets/                       Proyecto limpio:
+      |-- docker-compose.yml       Levanta PostgreSQL + la aplicacion.
+      |-- Dockerfile               Como se construye la imagen web.
+      |-- .env.example             Plantilla de configuracion.
+      |-- GestionTickets.slnx      Solucion de Visual Studio.
+      |-- dotnet-tools.json        Herramientas de scaffolding.
+      |-- Database/                Scripts SQL (00, 01 y 02).
+      |-- specs/gestion-tickets/   Especificacion, plan y tareas.
+      `-- src/GestionTickets/
+           |-- Program.cs          Inicio: conexion, rutas.
+           |-- Models/             ENTIDADES (generadas) + Metadatos.cs
+           |                       (validaciones) + Catalogos.cs
+           |-- Data/               GestionTicketsContext (generado) y
+           |                       configuracion de la conexion.
+           |-- Controllers/        Un controlador por entidad + Home.
+           |-- Views/              Paginas .cshtml (Bootstrap).
+           `-- wwwroot/            Estilos y JavaScript (ventana modal).
+
+
+=====================================================================
+ OPCION A - CON DOCKER (RECOMENDADA)
+=====================================================================
+
+REQUISITOS
+----------
+1. Docker Desktop instalado y abierto.
+   Comprobar en una terminal:   docker --version
+2. Internet la primera vez (descarga las imagenes de .NET y
+   PostgreSQL).
+No se necesita instalar .NET ni PostgreSQL en el equipo.
+
+
+PASO 1 - DESCOMPRIMIR
+---------------------
+Descomprimir GestionTickets_CSharp.zip, por ejemplo en:
+   C:\Proyectos\GestionTickets
+
+
+PASO 2 - CONFIGURAR LA CONTRASENA (.env)
+----------------------------------------
+1. En la carpeta GestionTickets, copiar .env.example como .env
+      En PowerShell:   copy .env.example .env
+2. Abrir .env con el Bloc de notas y escribir una contrasena:
+      POSTGRES_PASSWORD=MiClaveSegura2026
+3. Guardar.
+
+La contrasena solo vive en .env; no esta escrita en el codigo y .env
+no se sube a git (esta en .gitignore).
+
+
+PASO 3 - LEVANTAR LOS CONTENEDORES
+----------------------------------
+En una terminal, dentro de la carpeta GestionTickets:
+
+   docker compose up -d --build
+
+La primera vez tarda unos minutos. Comprobar con:
+
+   docker compose ps
+
+Deben aparecer:
+   gestion-tickets-db    Up (healthy)
+   gestion-tickets-web   Up
+
+La primera vez que arranca, PostgreSQL ejecuta solo los scripts
+Database\01_crear_tablas.sql y Database\02_datos_prueba.sql: crea
+las 5 tablas y carga los datos de ejemplo (incluida la usuaria
+Yolanda Rivera).
+
+
+PASO 4 - ABRIR LA APLICACION
+----------------------------
+En el navegador:   http://localhost:8081
+
+Aparece la pagina "Bienvenida YOLANDA" con los 5 modulos:
+   - Categorias:   tipos de problema, prioridad y tiempo de respuesta.
+   - Usuarios:     personas que reportan tickets.
+   - Tecnicos:     personal de soporte.
+   - Tickets:      solicitudes; filtro por estado; "Ver" abre el
+                   historial y permite agregar seguimientos.
+   - Seguimientos: avances de cada ticket.
+En cada modulo: "Agregar ..." abre el formulario en una ventana;
+"Ver", "Editar" y "Eliminar" en cada fila.
+
+Estado del sistema:   http://localhost:8081/health   -> Healthy
+
+
+VER LA BASE DE DATOS CON PGADMIN (OPCIONAL)
+-------------------------------------------
+Registrar un servidor en pgAdmin con:
+   Host: localhost        Puerto: 5434
+   Usuario: postgres      Contrasena: la del archivo .env
+   Base: gestion_tickets
+(Se usa el puerto 5434 para no chocar con un PostgreSQL instalado en
+el equipo, que normalmente usa 5432.)
+
+
+COMANDOS UTILES
+---------------
+   docker compose logs -f web    Ver los mensajes de la aplicacion.
+   docker compose down           Detener (los datos se conservan).
+   docker compose up -d          Volver a iniciar.
+   docker compose down -v        Detener y BORRAR los datos (al volver
+                                 a levantar se recargan los scripts).
+
+
+=====================================================================
+ OPCION B - SIN DOCKER (POSTGRESQL INSTALADO + VISUAL STUDIO)
+=====================================================================
+
+REQUISITOS
+----------
+1. SDK de .NET 10   (comprobar:  dotnet --list-sdks  -> 10.x)
+   o Visual Studio 2026 con "Desarrollo de ASP.NET y web".
+2. PostgreSQL y pgAdmin instalados, con la contrasena de "postgres".
+
+
+PASO 1 - CREAR LA BASE DE DATOS
+-------------------------------
+En pgAdmin, Query Tool sobre la base "postgres", ejecutar:
+   GestionTickets\Database\00_crear_base_datos.sql
+(o clic derecho en Databases > Create > Database: gestion_tickets)
+
+
+PASO 2 - CREAR TABLAS Y DATOS
+-----------------------------
+Seleccionar la base "gestion_tickets", abrir el Query Tool y ejecutar
+(F5) el script unico:
+   SCRIPT_BASE_DATOS_GESTION_TICKETS.sql
+(equivale a Database\01_crear_tablas.sql + Database\02_datos_prueba.sql)
+
+
+PASO 3 - CONFIGURAR LA CONEXION (.env)
+--------------------------------------
+Copiar .env.example como .env y dejar:
+   DB_HOST=localhost
+   DB_PORT=5432
+   POSTGRES_DB=gestion_tickets
+   POSTGRES_USER=postgres
+   POSTGRES_PASSWORD=TU_CONTRASENA
+
+
+PASO 4 - EJECUTAR
+-----------------
+Terminal, en la carpeta GestionTickets:
+   dotnet run --project src/GestionTickets
+Abrir http://localhost:5181
+(Con Visual Studio: abrir GestionTickets.slnx y presionar F5.)
+
+
+=====================================================================
+
+REGLAS QUE VALIDA EL SISTEMA
+----------------------------
+- La cedula tiene 10 digitos y no se repite.
+- El correo de usuarios y tecnicos es valido y no se repite.
+- El nombre de la categoria no se repite; la prioridad es Baja,
+  Media, Alta o Critica; el tiempo de respuesta va de 1 a 720 horas.
+- Un ticket solo se abre en una categoria activa y su fecha no puede
+  ser futura.
+- Solo los tecnicos activos registran seguimientos.
+- La fecha del seguimiento no puede ser anterior a la apertura del
+  ticket ni futura.
+- Un ticket "Cerrado" no admite mas seguimientos.
+- No se elimina una categoria, usuario o tecnico con tickets o
+  seguimientos (se puede marcar como inactivo).
+- Al eliminar un ticket se eliminan sus seguimientos.
+
+
+COMO FUNCIONA EL MVC EN ESTE PROYECTO
+-------------------------------------
+1. El usuario entra, por ejemplo, a /Tickets
+2. La ruta envia la peticion a TicketsController.Index()
+3. El controlador consulta el MODELO con Entity Framework
+   (GestionTicketsContext.Tickets), que genera el SQL para PostgreSQL.
+4. La VISTA Views/Tickets/Index.cshtml muestra la tabla.
+
+
+VOLVER A GENERAR CON SCAFFOLDING (SI CAMBIA LA BASE)
+----------------------------------------------------
+En la carpeta GestionTickets:
+
+   dotnet tool restore
+
+   dotnet ef dbcontext scaffold "Host=localhost;Port=5434;Database=gestion_tickets;Username=postgres;Password=TU_CONTRASENA" Npgsql.EntityFrameworkCore.PostgreSQL --project src/GestionTickets --output-dir Models --context-dir Data --context GestionTicketsContext --data-annotations --no-onconfiguring --force
+
+Para generar un controlador con sus vistas (ejemplo: Tickets), dentro
+de src/GestionTickets:
+
+   dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 10.0.15
+   dotnet aspnet-codegenerator controller -name TicketsController -m Ticket -dc GestionTickets.Data.GestionTicketsContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
+   dotnet remove package Microsoft.EntityFrameworkCore.SqlServer
+
+(El generador exige el paquete SqlServer aunque la base sea
+PostgreSQL; se agrega solo para generar y luego se quita.)
+Las validaciones de Models/Metadatos.cs no se pierden al regenerar.
+
+
+SOLUCION DE PROBLEMAS
+---------------------
+- "Defina POSTGRES_PASSWORD en el archivo .env":
+     falta el archivo .env o la contrasena esta vacia (Opcion A, Paso 2).
+- "port is already allocated" (8081 o 5434 ocupado):
+     cambiar WEB_PORT o DB_PORT en .env y repetir el Paso 3.
+- La pagina no abre:
+     esperar unos segundos y revisar  docker compose logs web
+- Se cambio la contrasena despues del primer arranque y no conecta:
+     PostgreSQL guarda la contrasena original en el volumen. Usar la
+     original o borrar los datos con  docker compose down -v  y
+     volver a levantar.
+- Las tablas no aparecen en Docker:
+     los scripts solo se ejecutan con el volumen vacio. Ejecutar
+     docker compose down -v  y  docker compose up -d
+- "relation categorias already exists" al ejecutar el script:
+     las tablas ya existen; no hace falta volver a ejecutarlo.
+- "password authentication failed for user postgres" (Opcion B):
+     revisar POSTGRES_PASSWORD y DB_PORT en .env.
+- "dotnet no se reconoce como un comando":
+     falta instalar el SDK de .NET 10 (solo para la Opcion B).
